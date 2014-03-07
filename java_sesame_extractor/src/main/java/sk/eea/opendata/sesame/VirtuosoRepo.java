@@ -5,20 +5,19 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.openrdf.OpenRDFException;
+import org.openrdf.model.Resource;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.resultio.text.csv.SPARQLResultsCSVWriter;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-
-import org.openrdf.repository.http.HTTPRepository;
 import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.Rio;
+import org.openrdf.rio.RDFParser;
 import virtuoso.sesame2.driver.VirtuosoRepository;
 
 public class VirtuosoRepo
@@ -53,6 +52,9 @@ public class VirtuosoRepo
     public void insert(){
         Repository repo = new VirtuosoRepository("jdbc:virtuoso://localhost:3333/",   "dba",  "dba");
 
+        String uri = "http://opendata.sk/procurements2";
+        Resource context = new URIImpl(uri); //nejde pre bigdata, musi byt null
+
         try {
             repo.initialize();
         } catch (RepositoryException e) {
@@ -61,9 +63,9 @@ public class VirtuosoRepo
 
         try {
             RepositoryConnection con = repo.getConnection();
-            File file =new File("e:\\eea\\comsode\\working_repo\\module\\RDF_loader\\src\\test\\resources\\org.rdf");
-            RDFFormat parser = Rio.getParserFormatForFileName(file.getName());
-            con.add(file, "http://opendata.sk",	RDFFormat.RDFXML);
+            File file =new File("e:\\eea\\comsode\\rdf\\small\\procurements.rdf");
+
+            con.add(file, uri,	RDFFormat.RDFXML, context);
             con.commit();
             con.close();
         } catch (OpenRDFException e) {
