@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # odcs backend
-# This file was inspirated by tomcat init script
+# This file was inspirated by odcs init script
 #
 
 ## Source function library.
@@ -29,7 +29,7 @@ else
     SU="/bin/su -s /bin/sh"
 fi
 
-# Get the tomcat config (use this for environment specific settings)
+# Get the odcs config (use this for environment specific settings)
 ODCS_CFG="/etc/odcs/odcs.conf"
 if [ -r "$ODCS_CFG" ]; then
     . $ODCS_CFG
@@ -44,19 +44,19 @@ fi
 # Define which connector port to use
 CONNECTOR_PORT="${CONNECTOR_PORT:-8080}"
 
-# Path to the tomcat launch script
+# Path to the odcs launch script
 ODCS_SCRIPT="/usr/sbin/run_odcs_backend"
 
-# Tomcat program name
+# odcs program name
 ODCS_PROG="${NAME}"
         
-# Define the tomcat username
+# Define the odcs username
 ODCS_USER="${ODCS_USER:-tomcat}"
 
-# Define the tomcat group
+# Define the odcs group
 ODCS_GROUP="${ODCS_GROUP:-`id -gn $ODCS_USER`}"
 
-# Define the tomcat log file
+# Define the odcs log file
 ODCS_LOG="${ODCS_LOG:-/var/log/${NAME}-initd.log}"
 
 # Define the pid file name
@@ -131,7 +131,7 @@ function start() {
     fi
 }
 function stop() {
-    echo -n "Stopping ${TOMCAT_PROG}: "
+    echo -n "Stopping ${ODCS_PROG}: "
     if [ -f "/var/lock/subsys/${NAME}" ]; then
       parseOptions
       if [ "$RETVAL" -eq "0" ]; then
