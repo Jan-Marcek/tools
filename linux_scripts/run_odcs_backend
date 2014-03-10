@@ -7,15 +7,21 @@ else
   exit 1
 fi
 
-ODCS="/usr/lib/odcs/backend/target/backend-1.0.0.jar"
-ODCS_CFG="/usr/lib/odcs/config.properties"
-ODCS_PID="/var/run/odcs_backend.pid"
 set_javacmd
-echo $ODCS_PID
+
+# Get the tomcat config (use this for environment specific settings)
+if [ -z "${TOMCAT_MAIN_CFG}" ]; then
+  TOMCAT_MAIN_CFG="/etc/odcs/odcs.conf"
+fi
+
+if [ -r "$TOMCAT_MAIN_CFG" ]; then
+  . $TOMCAT_MAIN_CFG
+fi
+
 
 
 if [ "$1" = "start" ]; then
-     nohup ${JAVACMD} $JAVA_OPTS -jar "$ODCS"  -c $ODCS_CFG & 
+     nohup ${JAVACMD} $JAVA_OPTS -jar "$ODCS_BACKEND"  -c $ODCS_BACKEND_CFG & 
      pid="$!"
     if [ ! -z "$ODCS_PID" ]; then
        echo "$pid" > $ODCS_PID
@@ -24,13 +30,13 @@ if [ "$1" = "start" ]; then
     exit 0
 elif [ "$1" = "start-security" ]; then
   ${JAVACMD} $JAVA_OPTS  \
-    -jar "$ODCS" 
+    -jar "$ODCS_BACKEND" 
 
     if [ ! -z "$ODCS_PID" ]; then
       echo $! > $ODCS_PID
     fi
 elif [ "$1" = "stop" ]; then
-   for KILLPID in `ps ax | grep 'backend-1.0.0.jar -c '$ODCS_CFG | grep -v 'grep' | awk ' { print $1;}'`; do 
+   for KILLPID in `ps ax | grep 'backend-1.0.0.jar -c '$ODCS_BACKEND_CFG | grep -v 'grep' | awk ' { print $1;}'`; do 
    kill -15 $KILLPID;
 done
     

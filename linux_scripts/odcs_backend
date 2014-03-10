@@ -184,15 +184,15 @@ function status()
       if [ "$RETVAL" -eq "2" ]; then
          log_failure_msg "${NAME} lockfile exists but process is not running"
       else
-#         pid="$(/usr/bin/pgrep -d , -u ${ODCS_USER} -G ${ODCS_GROUP} java)"
- #        if [ -z "$pid" ]; then
+         pid="$(/usr/bin/pgrep -f -d , -u ${ODCS_USER} -G ${ODCS_GROUP} backend)"
+        if [ -z "$pid" ]; then
              log_success_msg "${NAME} is stopped"
-  #           RETVAL="3"
-   #      else
-    #         log_success_msg "${NAME} (pid ${kpid}) is running..."
-#		echo "run"
+             RETVAL="3"
+        else
+             log_success_msg "${NAME} (pid ${kpid}) is running..."
+		echo "run"
              RETVAL="0"
- #        fi
+         fi
       fi
   fi
 }
@@ -200,7 +200,7 @@ function status()
 function checklockfile()
 {
    if [ -f /var/lock/subsys/${NAME} ]; then
-      pid="$(/usr/bin/pgrep -d , -u ${ODCS_USER} -G ${ODCS_GROUP} java)"
+      pid="$(/usr/bin/pgrep -d , -u ${ODCS_USER} -G ${ODCS_GROUP} backend)"
 # The lockfile exists but the process is not running
       if [ -z "$pid" ]; then
          RETVAL="2"
