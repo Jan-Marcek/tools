@@ -136,7 +136,7 @@ function stop() {
       parseOptions
       if [ "$RETVAL" -eq "0" ]; then
          touch /var/lock/subsys/${NAME} 2>&1 || RETVAL="4"
-		  read kpid < ${ODCS_PID}
+	 read kpid < ${ODCS_PID}
          [ "$RETVAL" -eq "0" ] && $SU - $ODCS_USER -c "${ODCS_SCRIPT} stop" >> ${ODCS_LOG} 2>&1 || RETVAL="4"
       fi
       if [ "$RETVAL" -eq "0" ]; then

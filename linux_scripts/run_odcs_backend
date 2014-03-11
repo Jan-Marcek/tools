@@ -18,6 +18,11 @@ if [ -r "$ODCS_MAIN_CFG" ]; then
   . $ODCS_MAIN_CFG
 fi
 
+# Define the odcs username
+ODCS_USER="${ODCS_USER:-tomcat}"
+
+# Define the odcs group
+ODCS_GROUP="${ODCS_GROUP:-`id -gn $ODCS_USER`}"
 
 
 if [ "$1" = "start" ]; then
@@ -39,6 +44,7 @@ elif [ "$1" = "stop" ]; then
    process_id="$(/usr/bin/pgrep -f -d , -u ${ODCS_USER} -G ${ODCS_GROUP} backend)"
    # send sigterm 
    kill -15 $process_id;
+   exit 0
 
     
 else
