@@ -114,12 +114,7 @@ function start() {
 	RETVAL="4"
     fi
     parseOptions
-    if [ "$RETVAL" -eq "0" -a "$SECURITY_MANAGER" = "true" ]; then
-        $SU - $ODCS_USER -c "${ODCS_SCRIPT} start-security" \
-            >> ${ODCS_LOG} 2>&1 || RETVAL="4"
-    else
-       [ "$RETVAL" -eq "0" ] && $SU - $ODCS_USER -c "${ODCS_SCRIPT} start" >> ${ODCS_LOG} 2>&1 || RETVAL="4"
-    fi
+    [ "$RETVAL" -eq "0" ] && $SU - $ODCS_USER -c "${ODCS_SCRIPT} start" >> ${ODCS_LOG} 2>&1 || RETVAL="4"
     if [ "$RETVAL" -eq "0" ]; then 
         log_success_msg
         touch /var/lock/subsys/${NAME}
@@ -136,8 +131,8 @@ function stop() {
       parseOptions
       if [ "$RETVAL" -eq "0" ]; then
          touch /var/lock/subsys/${NAME} 2>&1 || RETVAL="4"
-	 read kpid < ${ODCS_PID}
-         [ "$RETVAL" -eq "0" ] && $SU - $ODCS_USER -c "${ODCS_SCRIPT} stop" >> ${ODCS_LOG} 2>&1 || RETVAL="4"
+		  read kpid < ${ODCS_PID}
+         [ "$RETVAL" -eq "0" ] && ${ODCS_SCRIPT} stop >> ${ODCS_LOG} 2>&1 || RETVAL="4"
       fi
       if [ "$RETVAL" -eq "0" ]; then
          count="0"
@@ -183,8 +178,8 @@ function status()
       checklockfile
       if [ "$RETVAL" -eq "2" ]; then
          log_failure_msg "${NAME} lockfile exists but process is not running"
-         pid="$(/usr/bin/pgrep -f -d , -u ${ODCS_USER} -G ${ODCS_GROUP} backend)"
       else
+         pid="$(/usr/bin/pgrep -f -d , -u ${ODCS_USER} -G ${ODCS_GROUP} backend)"
         if [ -z "$pid" ]; then
              log_success_msg "${NAME} is stopped"
              RETVAL="3"
@@ -200,7 +195,7 @@ function status()
 function checklockfile()
 {
    if [ -f /var/lock/subsys/${NAME} ]; then
-      pid="$(/usr/bin/pgrep -f -d , -u ${ODCS_USER} -G ${ODCS_GROUP} java)"
+      pid="$(/usr/bin/pgrep -f -d , -u ${ODCS_USER} -G ${ODCS_GROUP} backend)"
 # The lockfile exists but the process is not running
       if [ -z "$pid" ]; then
          RETVAL="2"

@@ -9,7 +9,7 @@ fi
 
 set_javacmd
 
-# Get the odcs config (use this for environment specific settings)
+# Get the tomcat config (use this for environment specific settings)
 if [ -z "${ODCS_MAIN_CFG}" ]; then
   ODCS_MAIN_CFG="/etc/odcs/odcs.conf"
 fi
@@ -33,19 +33,11 @@ if [ "$1" = "start" ]; then
     fi
     echo $pid > $ODCS_PID
     exit 0
-elif [ "$1" = "start-security" ]; then
-  ${JAVACMD} $JAVA_OPTS  \
-    -jar "$ODCS_BACKEND" 
-
-    if [ ! -z "$ODCS_PID" ]; then
-      echo $! > $ODCS_PID
-    fi
 elif [ "$1" = "stop" ]; then
-   process_id="$(/usr/bin/pgrep -f -d , -u ${ODCS_USER} -G ${ODCS_GROUP} backend)"
-   # send sigterm 
-   kill -15 $process_id;
-   exit 0
-
+	read process_id < ${ODCS_PID}
+    # send sigterm 
+    kill -15 ${process_id}
+    exit 0
     
 else
   echo "Usage: $0 {start|start-security|stop}"
