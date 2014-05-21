@@ -1,4 +1,4 @@
-The files: odcs_backend, run_odcs_backend, odcs.conf	is connected with odcleanstore.
+The files: odcs_backend, run_odcs_backend, odcs.conf	are connected with odcleanstore.
 There are init.d service for linux.
 These scripts was inspirited by tomcat6 
 
